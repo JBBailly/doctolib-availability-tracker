@@ -17,3 +17,7 @@ wheels/
 
 # Logs
 *.log
+
+#Cron files
+launch.sh
+cron.sh
