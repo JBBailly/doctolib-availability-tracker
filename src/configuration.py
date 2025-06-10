@@ -32,6 +32,18 @@ class Configuration(BaseSettings):
         examples="Première consultation dentaire"
         )
 
+    raw_doctor_type: str | None = Field(
+        default=None,
+        description="Doctor type to use in doctolib URL page",
+        examples="dentiste"
+        )
+
+    visit_motive_id: int | None = Field(
+        default=None,
+        description="Visit motive id to use in doctolib URL page",
+        examples=475
+        )
+
     raw_filtered_doctor_names: str | None = Field(
         default=None,
         description="Doctor names that must be filtered when checking interesting appointments."

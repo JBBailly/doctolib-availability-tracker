@@ -13,6 +13,7 @@ dependencies = [
     "pydantic>=2.10.4",
     "selenium>=4.27.1",
     "webdriver-manager>=4.0.2",
+    "python-slugify>=8.0.4",
 ]
 
 
