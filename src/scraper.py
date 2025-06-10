@@ -24,6 +24,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+from slugify import slugify
 from webdriver_manager.chrome import ChromeDriverManager
 
 from src import constants
@@ -58,6 +59,8 @@ class Scraper:
         filtered_doctor_names: list[str],
         filtered_cities: list[str],
         visit_motive: str,
+        visit_motive_id: int,
+        raw_doctor_type: str,
         headless: bool,
         nb_days_filter: int = 14,
         start_url: str = constants.URL_DOCTOLIB,
@@ -71,6 +74,9 @@ class Scraper:
             filtered_cities (list[str]): Availabilities of cities with a name in this list will be filtered
             visit_motive (str): Visit motive name to use in doctolib search page, \
                 (e.g. "Première Consultation Dentaire")
+            visit_motive_id (int): Visit motive ID to use in doctolib search page, \
+                (e.g. 475 for "Première Consultation Dentaire")
+            raw_doctor_type (str): Doctor type to use in doctolib URL page, (e.g."dentiste")
             nb_days_filter (int): Availabilities after today + nb_days_filter will be filtered
             start_url (str): Doctolib search place: (e.g."https://www.doctolib.fr/")
         """
@@ -78,6 +84,8 @@ class Scraper:
         self.search_place: str = search_place
         self.start_url: str = start_url
         self.visite_motive: str = visit_motive
+        self.visit_motive_id: int = visit_motive_id
+        self.raw_doctor_type: str = raw_doctor_type
         self.nb_days_filter: str = nb_days_filter
         self.filtered_doctor_names: str = filtered_doctor_names
         self.filtered_cities: str = filtered_cities
@@ -172,6 +180,14 @@ class Scraper:
                 div:nth-child(2).flex pt-16.button:nth-child(2)"))
         )
         afficher_button.click()
+
+    def direct_page(self) -> None:
+        """Filter search Result by motif."""
+        # Go directly to intersting URL
+        full_url = f"{self.start_url}{self.raw_doctor_type}/{slugify(self.search_place)}\
+            ?ref_visit_motive_id={self.visit_motive_id}"
+        self.driver.get(url=full_url)
+        time.sleep(1)
 
     def extract_doctor_availability(self) -> None:
         """Extract doctor availability."""

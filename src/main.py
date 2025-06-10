@@ -14,6 +14,8 @@ def main() -> None:
         search_place=config.search_place,
         filtered_doctor_names=config.filtered_doctor_names,
         visit_motive=config.visit_motive,
+        raw_doctor_type=config.raw_doctor_type,
+        visit_motive_id=config.visit_motive_id,
         filtered_cities=config.filtered_cities,
         nb_days_filter=config.nb_days_filter,
         start_url=constants.URL_DOCTOLIB,
