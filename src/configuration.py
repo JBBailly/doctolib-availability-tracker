@@ -26,6 +26,12 @@ class Configuration(BaseSettings):
         default=14,
         description="Appointments starting in more than this number of days must be deleted",
     )
+    visit_motive: str | None = Field(
+        default=None,
+        description="Visit motive id to use in doctolib search page",
+        examples="Première consultation dentaire"
+        )
+
     raw_filtered_doctor_names: str | None = Field(
         default=None,
         description="Doctor names that must be filtered when checking interesting appointments."

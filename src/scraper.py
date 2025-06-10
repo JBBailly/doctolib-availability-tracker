@@ -57,6 +57,7 @@ class Scraper:
         search_place: str,
         filtered_doctor_names: list[str],
         filtered_cities: list[str],
+        visit_motive: str,
         headless: bool,
         nb_days_filter: int = 14,
         start_url: str = constants.URL_DOCTOLIB,
@@ -68,12 +69,15 @@ class Scraper:
             search_place (str): Search place to use in doctolib search page, (e.g. "Paris")
             filtered_doctor_names (list[str]): Availabilities of doctors with a name in this list will be filtered
             filtered_cities (list[str]): Availabilities of cities with a name in this list will be filtered
+            visit_motive (str): Visit motive name to use in doctolib search page, \
+                (e.g. "Première Consultation Dentaire")
             nb_days_filter (int): Availabilities after today + nb_days_filter will be filtered
             start_url (str): Doctolib search place: (e.g."https://www.doctolib.fr/")
         """
         self.search_term: str = search_term
         self.search_place: str = search_place
         self.start_url: str = start_url
+        self.visite_motive: str = visit_motive
         self.nb_days_filter: str = nb_days_filter
         self.filtered_doctor_names: str = filtered_doctor_names
         self.filtered_cities: str = filtered_cities
@@ -142,6 +146,32 @@ class Scraper:
         # Click the search button (updated selector)
         search_button = self.driver.find_element(By.CSS_SELECTOR, ".searchbar-submit-button")
         search_button.click()
+
+    def motif_search(self) -> None:
+        """Filter search Result by motif."""
+        time.sleep(2)
+        # Find and click the search input field (updated selector)
+        motif_input = self.wait.until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, "div.filter-bar-container > div:nth-child(2)"))
+        )
+        motif_input.click()
+        time.sleep(2)
+
+        # Find and click the label with the span containing the visit motive (updated selector)
+        label_with_span = self.wait.until(
+            EC.presence_of_element_located((
+                By.CSS_SELECTOR,
+                f"div.filter-bar-container >\
+                    div:nth-child(2).label.div:has(span:contains({self.visite_motive}))"))
+        )
+
+        label_with_span.click()
+
+        afficher_button = self.wait.until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, "div.filter-bar-container >\
+                div:nth-child(2).flex pt-16.button:nth-child(2)"))
+        )
+        afficher_button.click()
 
     def extract_doctor_availability(self) -> None:
         """Extract doctor availability."""
